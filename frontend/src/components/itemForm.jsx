@@ -1,4 +1,3 @@
-// src/components/ItemForm.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextField, Select, MenuItem, Box } from '@mui/material';
@@ -26,7 +25,6 @@ const ItemForm = () => {
     const files = Array.from(e.target.files);
     setFormData({...formData, images: files});
     
-    // Create preview URLs
     const previews = files.map(file => URL.createObjectURL(file));
     setPreviewImages(previews);
   };

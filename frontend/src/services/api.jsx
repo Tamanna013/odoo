@@ -1,12 +1,10 @@
-// src/services/api.js
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Ensure this matches your backend
+  baseURL: 'http://localhost:5000/api', 
   timeout: 10000,
 });
 
-// Request interceptor for auth token
 API.interceptors.request.use((config) => {
   const token = localStorage.getItem('token');
   if (token) {
@@ -17,7 +15,6 @@ API.interceptors.request.use((config) => {
   return Promise.reject(error);
 });
 
-// Response interceptor
 API.interceptors.response.use(
   (response) => response,
   (error) => {

@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
       points: data.points,
       isAdmin: data.isAdmin
     });
-    return data; // Return the data so components can handle navigation
+    return data; 
   };
 
   const register = async (name, email, password) => {
@@ -49,13 +49,12 @@ export const AuthProvider = ({ children }) => {
       points: data.points,
       isAdmin: data.isAdmin
     });
-    return data; // Return the data so components can handle navigation
+    return data; 
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    // Remove navigation from here
   };
 
   return (

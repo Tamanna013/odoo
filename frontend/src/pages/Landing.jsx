@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import heroImage from '../assets/hero.jpg';
 import Slider from 'react-slick';
-import API from '../services/api'; // adjust this path if needed
+import API from '../services/api'; 
 
 const Landing = () => {
   const [items, setItems] = useState([]);

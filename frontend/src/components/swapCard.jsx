@@ -1,12 +1,12 @@
 import { Button, Card, CardContent, Typography, Box, Avatar, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { respondToSwap } from '../services/swapService';
-import { useAuth } from '../context/AuthContext'; // ✅ Add this
+import { useAuth } from '../context/AuthContext'; 
 
 
 const SwapCard = ({ swap, currentUserId }) => {
   const navigate = useNavigate();
-  const { user } = useAuth(); // ✅ Add this inside SwapCard
+  const { user } = useAuth(); 
 
   const isRequester = swap.requester._id === currentUserId;
   const otherUser = isRequester ? swap.recipient : swap.requester;
@@ -15,8 +15,8 @@ const SwapCard = ({ swap, currentUserId }) => {
 
   const handleRespond = async (action) => {
     try {
-      await respondToSwap(swap._id, action);  // ✅ FIXED: send swap._id as URL param
-      navigate(0); // Refresh the page
+      await respondToSwap(swap._id, action);  
+      navigate(0); 
     } catch (err) {
       console.error('Failed to respond to swap:', err);
     }
@@ -90,24 +90,22 @@ const SwapCard = ({ swap, currentUserId }) => {
           )}
           
           {swap.status === 'pending' && (isRequester || user?.isAdmin) && (
-  <Button 
-    variant="outlined" 
-    size="small" 
-    color="error"
-    onClick={async () => {
-      try {
-        await cancelSwap(swap._id);
-        navigate(0); // refresh page
-      } catch (err) {
-        console.error('Failed to cancel swap:', err);
-      }
-    }}
-  >
-    Cancel
-  </Button>
-)}
-
-
+            <Button 
+              variant="outlined" 
+              size="small" 
+              color="error"
+              onClick={async () => {
+                try {
+                  await cancelSwap(swap._id);
+                  navigate(0);
+                } catch (err) {
+                console.error('Failed to cancel swap:', err);
+               }
+          }}
+        >
+          Cancel
+        </Button>
+      )}
         </Box>
       </CardContent>
     </Card>

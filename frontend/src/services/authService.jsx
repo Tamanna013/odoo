@@ -1,4 +1,3 @@
-// src/services/authService.js
 import API from './api';
 
 /**
@@ -16,7 +15,6 @@ export const registerUser = async (name, email, password) => {
       password
     });
     
-    // Store token automatically on successful registration
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
     }
@@ -43,7 +41,6 @@ export const loginUser = async (email, password) => {
       password
     });
     
-    // Store token automatically on successful login
     if (response.data.token) {
       localStorage.setItem('token', response.data.token);
     }
@@ -66,7 +63,6 @@ export const getProfile = async () => {
     const response = await API.get('/auth/profile');
     return response.data;
   } catch (error) {
-    // Clear token if profile fetch fails (likely invalid/expired token)
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
     }
@@ -84,10 +80,6 @@ export const getProfile = async () => {
  */
 export const logoutUser = async () => {
   try {
-    // Optional: Call backend logout endpoint if you have one
-    // await API.post('/auth/logout');
-    
-    // Clear local token
     localStorage.removeItem('token');
     return Promise.resolve();
   } catch (error) {
