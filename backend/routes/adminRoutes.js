@@ -5,7 +5,6 @@ const Item = require('../models/Item');
 const Swap = require('../models/Swap');
 const authMiddleware = require('../middleware/AuthMiddleware');
 
-// ✅ Only allow access to admins
 const adminCheck = (req, res, next) => {
   if (!req.user?.isAdmin) return res.status(403).json({ msg: 'Access denied' });
   next();

@@ -1,4 +1,3 @@
-// middleware/errorHandler.js
 exports.errorHandler = (err, req, res, next) => {
   console.error(err.stack);
   

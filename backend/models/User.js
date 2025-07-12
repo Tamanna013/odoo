@@ -5,11 +5,11 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  points: { type: Number, default: 100 }, // Starting points
+  points: { type: Number, default: 100 }, 
   location: String,
   profilePhoto: String,
   createdAt: { type: Date, default: Date.now },
-  isAdmin: { type: Boolean, default: false }, // ✅ important for access control
+  isAdmin: { type: Boolean, default: false }, 
   profilePhoto: { type: String }
 });
 

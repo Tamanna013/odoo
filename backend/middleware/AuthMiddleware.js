@@ -13,14 +13,12 @@ const authMiddleware = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 🔥 Fetch the full user so we can attach isAdmin
     const user = await User.findById(decoded.id).select('-password');
 
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    // ✅ Attach full user info to request
     req.user = {
       id: user._id.toString(),
       isAdmin: user.isAdmin
