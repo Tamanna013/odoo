@@ -6,8 +6,13 @@ const ItemCard = ({ item }) => {
     <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <CardMedia
         component="img"
-        height="200"
-        image={`http://localhost:5000/${item.images[0]}`}
+        sx={{
+          height: 180,
+          width: '100%',
+          objectFit: 'cover',
+          borderRadius: 1
+        }}
+        image={`http://localhost:5000/uploads/items/${item.images[0]}`}
         alt={item.title}
       />
       <CardContent sx={{ flexGrow: 1 }}>
