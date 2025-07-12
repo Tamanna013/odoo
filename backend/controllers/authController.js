@@ -11,9 +11,8 @@ const generateToken = (userId) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    // Make sure to properly populate if needed
     const user = await User.findById(req.user.id)
-      .select('-password -__v') // Exclude sensitive fields
+      .select('-password -__v') 
       .lean();
       
     if (!user) {
@@ -36,13 +35,11 @@ exports.register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     
-    // Check if user exists
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ msg: 'User already exists' });
     }
 
-    // Create user
     user = new User({
       name,
       email,
@@ -51,7 +48,6 @@ exports.register = async (req, res) => {
 
     await user.save();
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -76,19 +72,16 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ msg: 'Invalid credentials' });
     }
 
-    // Generate token
     const token = generateToken(user._id);
 
     res.json({
@@ -96,6 +89,7 @@ exports.login = async (req, res) => {
       name: user.name,
       email: user.email,
       points: user.points,
+      isAdmin: user.isAdmin,
       token
     });
   } catch (err) {

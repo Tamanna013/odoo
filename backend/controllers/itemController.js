@@ -2,7 +2,6 @@ const multer = require('multer');
 const path = require('path');
 const Item = require('../models/Item');
 
-// Set up storage engine
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, 'uploads/items/'),
   filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
@@ -36,7 +35,7 @@ const createItem = async (req, res) => {
       condition,
       pointsValue,
       images,
-      owner: req.user.id // ✅ match the model field
+      owner: req.user.id 
     });
 
     await newItem.save();
@@ -49,7 +48,7 @@ const createItem = async (req, res) => {
 
 const getAllItems = async (req, res) => {
   try {
-    const items = await Item.find().populate('owner', 'name'); // optional: include owner info
+    const items = await Item.find().populate('owner', 'name');
     res.status(200).json(items);
   } catch (err) {
     console.error('Error in getAllItems:', err.message);

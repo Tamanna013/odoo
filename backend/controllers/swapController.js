@@ -160,21 +160,18 @@ exports.cancelSwap = async (req, res) => {
       return res.status(404).json({ msg: 'Swap not found' });
     }
 
-    // Check if user is the requester
-    if (swap.requester.toString() !== req.user.id) {
+    // ✅ Allow either the requester or an admin to cancel
+    if (swap.requester.toString() !== req.user.id && !req.user.isAdmin) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
-    // Check if swap is pending
     if (swap.status !== 'pending') {
       return res.status(400).json({ msg: 'Cannot cancel processed swap' });
     }
 
-    // Update swap status
     swap.status = 'cancelled';
     await swap.save();
 
-    // Revert items status
     swap.requestedItem.status = 'available';
     await swap.requestedItem.save();
 
