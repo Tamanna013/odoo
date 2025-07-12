@@ -85,16 +85,24 @@ const SwapCard = ({ swap, currentUserId }) => {
             </Box>
           )}
           
-          {swap.status === 'pending' && isRequester && (
-            <Button 
-              variant="outlined" 
-              size="small" 
-              color="error"
-              onClick={() => handleRespond('cancel')}
-            >
-              Cancel
-            </Button>
-          )}
+          {swap.status === 'pending' && (isRequester || user?.isAdmin) && (
+  <Button 
+    variant="outlined" 
+    size="small" 
+    color="error"
+    onClick={async () => {
+      try {
+        await cancelSwap(swap._id);
+        navigate(0); // refresh page
+      } catch (err) {
+        console.error('Failed to cancel swap:', err);
+      }
+    }}
+  >
+    Cancel
+  </Button>
+)}
+
         </Box>
       </CardContent>
     </Card>
