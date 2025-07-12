@@ -47,12 +47,6 @@ const createItem = async (req, res) => {
   }
 };
 
-module.exports = {
-  uploadMiddleware,
-  createItem
-};
-
-
 const getAllItems = async (req, res) => {
   try {
     const items = await Item.find().populate('owner', 'name'); // optional: include owner info
@@ -63,8 +57,24 @@ const getAllItems = async (req, res) => {
   }
 };
 
+const getItemById = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id).populate('owner', 'name profilePhoto');
+
+    if (!item) {
+      return res.status(404).json({ message: 'Item not found' });
+    }
+
+    res.status(200).json(item);
+  } catch (err) {
+    console.error('Error in getItemById:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
 module.exports = {
   uploadMiddleware,
   createItem,
-  getAllItems
+  getAllItems,
+  getItemById
 };

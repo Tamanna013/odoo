@@ -1,16 +1,43 @@
-// routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const adminController = require('../controllers/adminController');
-const adminMiddleware = require('../middleware/adminMiddleware');
+const User = require('../models/User');
+const Item = require('../models/Item');
+const Swap = require('../models/Swap');
+const authMiddleware = require('../middleware/AuthMiddleware');
 
-// GET all users
-router.get('/users', adminMiddleware, adminController.getAllUsers);
+// ✅ Only allow access to admins
+const adminCheck = (req, res, next) => {
+  if (!req.user?.isAdmin) return res.status(403).json({ msg: 'Access denied' });
+  next();
+};
 
-// DELETE user
-router.delete('/users/:id', adminMiddleware, adminController.deleteUser);
+router.get('/users', authMiddleware, adminCheck, async (req, res) => {
+  try {
+    const users = await User.find({}, 'name email points');
+    res.json(users);
+  } catch (err) {
+    res.status(500).json({ msg: 'Error fetching users' });
+  }
+});
 
-// GET all items (including pending/private)
-router.get('/items', adminMiddleware, adminController.getAllItems);
+router.get('/items', authMiddleware, adminCheck, async (req, res) => {
+  try {
+    const items = await Item.find().populate('owner', 'name');
+    res.json(items);
+  } catch (err) {
+    res.status(500).json({ msg: 'Error fetching items' });
+  }
+});
+
+router.get('/swaps', authMiddleware, adminCheck, async (req, res) => {
+  try {
+    const swaps = await Swap.find()
+      .populate('requester', 'name')
+      .populate('recipient', 'name');
+    res.json(swaps);
+  } catch (err) {
+    res.status(500).json({ msg: 'Error fetching swaps' });
+  }
+});
 
 module.exports = router;

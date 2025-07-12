@@ -86,9 +86,8 @@ exports.getSwaps = async (req, res) => {
 
 exports.respondToSwap = async (req, res) => {
   try {
-    const { swapId, action } = req.body; // action: 'accept' or 'reject'
-
-    const swap = await Swap.findById(swapId)
+    const { action } = req.body;
+    const swap = await Swap.findById(req.params.id)
       .populate('requestedItem')
       .populate('offeredItem');
 

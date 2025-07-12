@@ -8,7 +8,9 @@ const userSchema = new mongoose.Schema({
   points: { type: Number, default: 100 }, // Starting points
   location: String,
   profilePhoto: String,
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  isAdmin: { type: Boolean, default: false }, // ✅ important for access control
+  profilePhoto: { type: String }
 });
 
 // Hash password before saving
