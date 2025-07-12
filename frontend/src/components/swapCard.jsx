@@ -1,9 +1,13 @@
 import { Button, Card, CardContent, Typography, Box, Avatar, Chip } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { respondToSwap } from '../services/swapService';
+import { useAuth } from '../context/AuthContext'; // ✅ Add this
+
 
 const SwapCard = ({ swap, currentUserId }) => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // ✅ Add this inside SwapCard
+
   const isRequester = swap.requester._id === currentUserId;
   const otherUser = isRequester ? swap.recipient : swap.requester;
   const requestedItem = swap.requestedItem;
@@ -102,6 +106,7 @@ const SwapCard = ({ swap, currentUserId }) => {
     Cancel
   </Button>
 )}
+
 
         </Box>
       </CardContent>

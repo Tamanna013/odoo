@@ -8,7 +8,7 @@ import {
   CircularProgress,
   Button
 } from '@mui/material';
-import SwapCard from '../components/SwapCard';
+import SwapCard from '../components/swapCard';
 import { getSwaps } from '../services/swapService';
 import { useAuth } from '../context/AuthContext';
 

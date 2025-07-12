@@ -19,3 +19,7 @@ export const requestSwap = async (swapData) => {
   const response = await API.post('/swaps', swapData);
   return response.data;
 };
+
+export const deleteItem = async (itemId) => {
+  return await API.delete(`/items/${itemId}`);
+};

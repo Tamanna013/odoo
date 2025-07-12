@@ -1,10 +1,54 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Container, Box, Typography, Button, Grid } from '@mui/material';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Card,
+  CardMedia,
+  CardContent,
+  CircularProgress
+} from '@mui/material';
 import heroImage from '../assets/hero.jpg';
+import Slider from 'react-slick';
+import API from '../services/api'; // adjust this path if needed
 
 const Landing = () => {
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchItems = async () => {
+      try {
+        const res = await API.get('/items');
+        const availableItems = res.data.filter(item => item.status === 'available');
+        setItems(availableItems);
+      } catch (err) {
+        console.error('Error fetching items:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
+  }, []);
+
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: Math.min(3, items.length),
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 960, settings: { slidesToShow: 2 } },
+      { breakpoint: 600, settings: { slidesToShow: 1 } }
+    ]
+  };
+
   return (
     <>
+      {/* Hero Section */}
       <Box
         sx={{
           backgroundImage: `url(${heroImage})`,
@@ -37,7 +81,8 @@ const Landing = () => {
           </Button>
         </Box>
       </Box>
-      
+
+      {/* How it Works */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography variant="h4" align="center" gutterBottom>
           How It Works
@@ -62,8 +107,48 @@ const Landing = () => {
             </Typography>
           </Grid>
         </Grid>
-        
-        <Box sx={{ mt: 8, textAlign: 'center' }}>
+
+        {/* Carousel Section */}
+        <Box sx={{ mt: 10 }}>
+          <Typography variant="h4" align="center" gutterBottom>
+            Featured Items for Swap
+          </Typography>
+
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+              <CircularProgress />
+            </Box>
+          ) : items.length === 0 ? (
+            <Typography align="center" sx={{ mt: 2 }}>
+              No items currently available for swap.
+            </Typography>
+          ) : (
+            <Slider {...sliderSettings}>
+              {items.map(item => (
+                <Box key={item._id} sx={{ px: 1 }}>
+                  <Card>
+                    <CardMedia
+  component="img"
+  sx={{ height: 60, width: 60, objectFit: 'cover', borderRadius: 1 }}
+  image={`http://localhost:5000/uploads/items/${item.images[0]}`}
+  alt={item.title}
+/>
+
+                    <CardContent>
+                      <Typography variant="h6" noWrap>{item.title}</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        {item.pointsValue} pts
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </Box>
+              ))}
+            </Slider>
+          )}
+        </Box>
+
+        {/* CTA */}
+        <Box sx={{ mt: 10, textAlign: 'center' }}>
           <Button
             variant="contained"
             color="primary"

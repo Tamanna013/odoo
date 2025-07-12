@@ -1,21 +1,12 @@
 import { useState, useEffect } from 'react';
 import { 
-  Container, 
-  Typography, 
-  Tabs, 
-  Tab, 
-  Box, 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableContainer, 
-  TableHead, 
-  TableRow, 
-  Paper,
-  Button,
-  CircularProgress
+  Container, Typography, Tabs, Tab, Box, Table, TableBody, 
+  TableCell, TableContainer, TableHead, TableRow, Paper,
+  Button, CircularProgress 
 } from '@mui/material';
 import { getUsers, getItems, getSwaps } from '../services/adminService';
+import { deleteItem } from '../services/itemService';
+import { cancelSwap } from '../services/swapService';
 import { useAuth } from '../context/AuthContext';
 
 const Admin = () => {
@@ -28,7 +19,7 @@ const Admin = () => {
 
   useEffect(() => {
     if (!user?.isAdmin) return;
-    
+
     const fetchData = async () => {
       setLoading(true);
       try {
@@ -48,20 +39,34 @@ const Admin = () => {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [tabValue, user]);
 
-  const handleTabChange = (event, newValue) => {
-    setTabValue(newValue);
+  const handleTabChange = (event, newValue) => setTabValue(newValue);
+
+  const handleDeleteItem = async (id) => {
+    try {
+      await deleteItem(id);
+      setItems(items.filter(item => item._id !== id));
+    } catch (err) {
+      console.error('Failed to delete item:', err);
+    }
+  };
+
+  const handleCancelSwap = async (id) => {
+    try {
+      await cancelSwap(id);
+      setSwaps(swaps.map(s => s._id === id ? { ...s, status: 'cancelled' } : s));
+    } catch (err) {
+      console.error('Failed to cancel swap:', err);
+    }
   };
 
   if (!user?.isAdmin) {
     return (
       <Container maxWidth="lg" sx={{ mt: 4 }}>
-        <Typography variant="h4" color="error">
-          Access Denied
-        </Typography>
+        <Typography variant="h4" color="error">Access Denied</Typography>
         <Typography variant="body1" sx={{ mt: 2 }}>
           You must be an administrator to view this page.
         </Typography>
@@ -72,17 +77,13 @@ const Admin = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4 }}>
       <Typography variant="h4" gutterBottom>Admin Dashboard</Typography>
-      
-      <Tabs 
-        value={tabValue} 
-        onChange={handleTabChange} 
-        sx={{ mb: 4 }}
-      >
+
+      <Tabs value={tabValue} onChange={handleTabChange} sx={{ mb: 4 }}>
         <Tab label="Users" />
         <Tab label="Items" />
         <Tab label="Swaps" />
       </Tabs>
-      
+
       {loading ? (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
           <CircularProgress />
@@ -129,25 +130,43 @@ const Admin = () => {
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {tabValue === 1 && items.map(item => (
                 <TableRow key={item._id}>
                   <TableCell>{item.title}</TableCell>
                   <TableCell>{item.owner.name}</TableCell>
                   <TableCell>{item.status}</TableCell>
                   <TableCell>
-                    <Button size="small" color="error">Remove</Button>
+                    <Button 
+                      size="small" 
+                      color="error"
+                      onClick={() => handleDeleteItem(item._id)}
+                    >
+                      Remove
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
-              
+
               {tabValue === 2 && swaps.map(swap => (
                 <TableRow key={swap._id}>
                   <TableCell>{swap.requester.name}</TableCell>
                   <TableCell>{swap.recipient.name}</TableCell>
                   <TableCell>{swap.status}</TableCell>
                   <TableCell>
-                    <Button size="small" color="error">Cancel</Button>
+                    {swap.status === 'pending' ? (
+                      <Button 
+                        size="small" 
+                        color="error"
+                        onClick={() => handleCancelSwap(swap._id)}
+                      >
+                        Cancel
+                      </Button>
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">
+                        {swap.status}
+                      </Typography>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}

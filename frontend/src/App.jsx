@@ -13,6 +13,8 @@ import Dashboard from './pages/Dashboard';
 import Admin from './pages/Admin';
 import NotFound from './pages/NotFound';
 import ErrorBoundary from './components/errorBoundary';
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function App() {
   return (
