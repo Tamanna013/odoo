@@ -1,0 +1,70 @@
+const multer = require('multer');
+const path = require('path');
+const Item = require('../models/Item');
+
+// Set up storage engine
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, 'uploads/items/'),
+  filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+});
+
+const upload = multer({ storage });
+const uploadMiddleware = upload.array('images', 5);
+
+const createItem = async (req, res) => {
+  try {
+    const {
+      title,
+      description,
+      category,
+      location,
+      type,
+      size,
+      condition,
+      pointsValue
+    } = req.body;
+
+    const images = req.files.map(file => file.filename);
+
+    const newItem = new Item({
+      title,
+      description,
+      category,
+      location,
+      type,
+      size,
+      condition,
+      pointsValue,
+      images,
+      owner: req.user.id // ✅ match the model field
+    });
+
+    await newItem.save();
+    res.status(201).json({ message: 'Item created!', item: newItem });
+  } catch (err) {
+    console.error('Error in createItem:', err.message);
+    res.status(500).json({ message: 'Server error', error: err.message });
+  }
+};
+
+module.exports = {
+  uploadMiddleware,
+  createItem
+};
+
+
+const getAllItems = async (req, res) => {
+  try {
+    const items = await Item.find().populate('owner', 'name'); // optional: include owner info
+    res.status(200).json(items);
+  } catch (err) {
+    console.error('Error in getAllItems:', err.message);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+module.exports = {
+  uploadMiddleware,
+  createItem,
+  getAllItems
+};
