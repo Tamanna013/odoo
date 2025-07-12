@@ -93,10 +93,17 @@ const ItemDetail = () => {
             }
           }}>
             {item.images.map((img, index) => (
-              <img 
-                key={index} 
-                src={`http://localhost:5000/${img}`} 
+              <Box
+                key={index}
+                component="img"
+                src={`http://localhost:5000/uploads/items/${img}`}
                 alt={`${item.title} ${index + 1}`}
+                sx={{
+                  height: 180,
+                  width: '100%',
+                  objectFit: 'cover',
+                  borderRadius: 2,
+                }}
               />
             ))}
           </Box>

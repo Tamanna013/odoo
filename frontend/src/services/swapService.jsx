@@ -5,8 +5,8 @@ export const getSwaps = async () => {
   return response.data;
 };
 
-export const respondToSwap = async ({ swapId, action }) => {
-  const response = await API.put('/swaps/respond', { swapId, action });
+export const respondToSwap = async (swapId, action) => {
+  const response = await API.put(`/swaps/${swapId}/respond`, { action });
   return response.data;
 };
 

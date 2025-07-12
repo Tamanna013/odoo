@@ -3,23 +3,35 @@ import { Card, CardMedia, CardContent, Typography, Chip, Box } from '@mui/materi
 
 const ItemCard = ({ item }) => {
   return (
-    <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+    <Card
+      component={Link}
+      to={`/items/${item._id}`}
+      sx={{
+        height: '100%',
+        textDecoration: 'none',
+        color: 'inherit',
+        display: 'flex',
+        flexDirection: 'column',
+        transition: 'transform 0.2s ease-in-out',
+        '&:hover': {
+          transform: 'scale(1.02)',
+        },
+      }}
+    >
       <CardMedia
         component="img"
+        image={`http://localhost:5000/uploads/items/${item.images[0]}`}
+        alt={item.title}
         sx={{
           height: 180,
           width: '100%',
           objectFit: 'cover',
           borderRadius: 1
         }}
-        image={`http://localhost:5000/uploads/items/${item.images[0]}`}
-        alt={item.title}
       />
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography gutterBottom variant="h6" component="h3">
-          <Link to={`/items/${item._id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
-            {item.title}
-          </Link>
+          {item.title}
         </Typography>
         <Box sx={{ display: 'flex', gap: 1, mb: 1, flexWrap: 'wrap' }}>
           <Chip label={item.category} size="small" color="primary" />

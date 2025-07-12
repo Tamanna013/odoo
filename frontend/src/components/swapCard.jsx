@@ -11,7 +11,7 @@ const SwapCard = ({ swap, currentUserId }) => {
 
   const handleRespond = async (action) => {
     try {
-      await respondToSwap({ swapId: swap._id, action });
+      await respondToSwap(swap._id, action);  // ✅ FIXED: send swap._id as URL param
       navigate(0); // Refresh the page
     } catch (err) {
       console.error('Failed to respond to swap:', err);
