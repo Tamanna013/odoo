@@ -12,4 +12,7 @@ router.get('/', getAllItems);
 // ✅ Route to get item by ID
 router.get('/:id', getItemById);
 
+const { deleteItem } = require('../controllers/itemController');
+router.delete('/:id', authMiddleware, deleteItem);
+
 module.exports = router;

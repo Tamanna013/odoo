@@ -71,9 +71,28 @@ const getItemById = async (req, res) => {
   }
 };
 
+const deleteItem = async (req, res) => {
+  try {
+    const item = await Item.findById(req.params.id);
+    if (!item) return res.status(404).json({ msg: 'Item not found' });
+
+    // Only owner or admin can delete
+    if (item.owner.toString() !== req.user.id && !req.user.isAdmin) {
+      return res.status(401).json({ msg: 'Not authorized' });
+    }
+
+    await item.deleteOne();
+    res.json({ msg: 'Item deleted successfully' });
+  } catch (err) {
+    console.error('Error in deleteItem:', err.message);
+    res.status(500).json({ msg: 'Server error' });
+  }
+};
+
 module.exports = {
   uploadMiddleware,
   createItem,
   getAllItems,
-  getItemById
+  getItemById,
+  deleteItem 
 };
